@@ -1,0 +1,109 @@
+name: build
+
+on:
+  push:
+    branches:
+    tags:
+#  pull_request:
+
+# one running workflow per branch, others will wait
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: Display Go version
+        run: go version
+
+      - name: Build and test
+        run: |
+          go test -race -v -timeout=100s -covermode=atomic -coverprofile=$GITHUB_WORKSPACE/coverage.out ./...
+        working-directory: app
+        env:
+          GO111MODULE: on
+          GOFLAGS: "-mod=vendor"
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4-beta
+        env:
+          files: $GITHUB_WORKSPACE/coverage.out
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  build-image:
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version
+        id: version
+        run: |
+          GITHUB_SHA=${{ github.sha }}
+          BRANCH_SAFE=$(echo ${GITHUB_REF} | cut -d'/' -f3- | sed -e 's/[^a-zA-Z0-9-]/-/g')
+          echo "version=${BRANCH_SAFE}" >> $GITHUB_OUTPUT
+          echo "revision=${BRANCH_SAFE}-${GITHUB_SHA:0:7}-$(date +%Y%m%dT%H:%M:%S)" >> $GITHUB_OUTPUT
+
+      - name: Build and push image to ghcr.io
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          tags: ghcr.io/kulapard/tg2rss:${{ steps.version.outputs.version }}
+          push: true
+          build-args: |
+            REVISION=${{ steps.version.outputs.revision }}
+
+      - name: Build and push image to ghcr.io (latest)
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          tags: |
+            ghcr.io/kulapard/tg2rss:${{ steps.version.outputs.version }}
+            ghcr.io/kulapard/tg2rss:latest
+          push: true
+          build-args: |
+            REVISION=${{ steps.version.outputs.revision }}
+
+  test-action:
+    needs: [ build-image ]
+    runs-on: ubuntu-latest
+    env:
+      OUTPUT_DIR: ${{ github.workspace }}/output
+      OUTPUT_FILENAME: "rss.xml"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create RSS feed
+        uses: ./
+        with:
+          output-file: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
+          telegram-channels: "@telegram"
+          dry-run: false
+
+      - name: Check RSS feed file exists
+        run: |
+          test -f "${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}"

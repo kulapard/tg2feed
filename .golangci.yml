@@ -1,0 +1,62 @@
+run:
+  modules-download-mode: vendor
+  skip-dirs:
+    - vendor
+  concurrency: 4
+
+linters-settings:
+  govet:
+    check-shadowing: true
+  golint:
+    min-confidence: 0.8
+  gocyclo:
+    min-complexity: 15
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  misspell:
+    locale: US
+  lll:
+    line-length: 140
+  gocritic:
+    enabled-tags:
+      - performance
+      - style
+      - experimental
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - megacheck
+    - revive
+    - govet
+    - unconvert
+    - megacheck
+    - unused
+    - gas
+    - misspell
+    - unparam
+    - typecheck
+    - ineffassign
+    - stylecheck
+    - gochecknoinits
+    - exportloopref
+    - gocritic
+    - nakedret
+    - gosimple
+    - prealloc
+
+  fast: false
+
+
+issues:
+  exclude-rules:
+    - text: "package-comments: should have a package comment"
+      linters:
+        - revive
+  exclude-use-default: false

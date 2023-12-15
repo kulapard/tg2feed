@@ -14,6 +14,7 @@ var revision = "unknown"
 
 const defaultOutputFile = "rss.xml"
 
+// Config represents application configuration
 type Config struct {
 	DryRun           bool
 	OutputFile       string

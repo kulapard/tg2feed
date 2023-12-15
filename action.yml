@@ -1,0 +1,21 @@
+name: "Telegram to RSS Action"
+description: "Create RSS feed from Telegram channel"
+author: "Taras Drapalyuk"
+branding:
+  icon: "rss"
+  color: "blue"
+inputs:
+  output-file:
+    description: "Output file path for RSS feed."
+    default: "./rss.xml"
+  dry-run:
+    description: "Do not create RSS feed file, just print it to stdout."
+    default: "false"
+  telegram-channels:
+    description: "Telegram channels separated by comma. 
+                  Excepted formats: `@channel`, `channel` or `https://t.me/channel`"
+    default: "@telegram"
+    required: true
+runs:
+  using: "docker"
+  image: "ghcr.io/kulapard/tg2rss:latest"

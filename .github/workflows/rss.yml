@@ -1,0 +1,41 @@
+name: Build RSS feed
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+# one running workflow per branch, others will wait
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+env:
+  OUTPUT_DIR: './pages'
+  OUTPUT_FILENAME: 'rss.xml'
+  COMMIT_MESSAGE: 'Update RSS feed'
+
+jobs:
+  build-rss:
+    permissions:
+      id-token: write # to use pages
+      contents: read
+      pages: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create RSS feed
+        uses: ./
+        with:
+          output-file: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
+          telegram-channels: "@Alexey_Pivo_varov,@addmeto,@kyrillic,@dukaliti,@pmdaily"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ${{ env.OUTPUT_DIR }}
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3

@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create RSS feed
-        uses: kulapard/tg-rss@main
+        uses: kulapard/tg2rss@main
         with:
           output-file: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
           telegram-channels: "@Alexey_Pivo_varov,@addmeto,@kyrillic,@dukaliti,@pmdaily"

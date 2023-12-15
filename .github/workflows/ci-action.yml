@@ -1,0 +1,30 @@
+name: build
+
+on:
+  push:
+    paths: # to run only on changes in the action file
+      - 'action.yml'
+
+# one running workflow per branch, others will wait
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  test-action:
+    needs: [ build-image ]
+    runs-on: ubuntu-latest
+    env:
+      OUTPUT_DIR: ${{ github.workspace }}/output
+      OUTPUT_FILENAME: "rss.xml"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create RSS feed
+        uses: ./
+        with:
+          output-file: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
+          telegram-channels: "@telegram"
+          dry-run: false
+
+      - name: Check RSS feed file exists
+        run: |
+          test -f "${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}"

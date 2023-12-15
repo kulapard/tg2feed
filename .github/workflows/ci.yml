@@ -88,22 +88,3 @@ jobs:
           push: true
           build-args: |
             REVISION=${{ steps.version.outputs.revision }}
-
-  test-action:
-    needs: [ build-image ]
-    runs-on: ubuntu-latest
-    env:
-      OUTPUT_DIR: ${{ github.workspace }}/output
-      OUTPUT_FILENAME: "rss.xml"
-    steps:
-      - uses: actions/checkout@v4
-      - name: Create RSS feed
-        uses: ./
-        with:
-          output-file: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
-          telegram-channels: "@telegram"
-          dry-run: false
-
-      - name: Check RSS feed file exists
-        run: |
-          test -f "${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}"

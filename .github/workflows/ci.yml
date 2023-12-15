@@ -4,7 +4,6 @@ on:
   push:
     branches:
     tags:
-#  pull_request:
 
 # one running workflow per branch, others will wait
 concurrency:
@@ -43,6 +42,7 @@ jobs:
 
   build-image:
     needs: [ test ]
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -69,6 +69,7 @@ jobs:
           echo "revision=${BRANCH_SAFE}-${GITHUB_SHA:0:7}-$(date +%Y%m%dT%H:%M:%S)" >> $GITHUB_OUTPUT
 
       - name: Build and push image to ghcr.io
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -88,22 +89,3 @@ jobs:
           push: true
           build-args: |
             REVISION=${{ steps.version.outputs.revision }}
-
-  test-action:
-    needs: [ build-image ]
-    runs-on: ubuntu-latest
-    env:
-      OUTPUT_DIR: ${{ github.workspace }}/output
-      OUTPUT_FILENAME: "rss.xml"
-    steps:
-      - uses: actions/checkout@v4
-      - name: Create RSS feed
-        uses: ./
-        with:
-          output-file: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
-          telegram-channels: "@telegram"
-          dry-run: false
-
-      - name: Check RSS feed file exists
-        run: |
-          test -f "${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}"

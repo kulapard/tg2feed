@@ -11,12 +11,11 @@ concurrency:
 env:
   OUTPUT_DIR: './pages'
   OUTPUT_FILENAME: 'rss.xml'
-  COMMIT_MESSAGE: 'Update RSS feed'
 
 jobs:
   build-rss:
     permissions:
-      id-token: write # to use pages
+      id-token: write  # to use pages
       contents: read
       pages: write
     runs-on: ubuntu-latest
@@ -34,5 +33,4 @@ jobs:
         with:
           path: ${{ env.OUTPUT_DIR }}
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v3

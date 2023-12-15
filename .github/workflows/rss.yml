@@ -1,7 +1,7 @@
 name: Build RSS feed
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 # one running workflow per branch, others will wait

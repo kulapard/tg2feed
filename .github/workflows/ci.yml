@@ -4,7 +4,6 @@ on:
   push:
     branches:
     tags:
-#  pull_request:
 
 # one running workflow per branch, others will wait
 concurrency:
@@ -69,6 +68,7 @@ jobs:
           echo "revision=${BRANCH_SAFE}-${GITHUB_SHA:0:7}-$(date +%Y%m%dT%H:%M:%S)" >> $GITHUB_OUTPUT
 
       - name: Build and push image to ghcr.io
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/build-push-action@v5
         with:
           context: .

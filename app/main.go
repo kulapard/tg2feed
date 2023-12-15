@@ -14,38 +14,46 @@ var revision = "unknown"
 
 const defaultOutputFile = "rss.xml"
 
-// Str2Bool converts string to bool
-func Str2Bool(str string) bool {
+type Config struct {
+	DryRun           bool
+	OutputFile       string
+	TelegramChannels []string
+}
+
+func (c *Config) String() string {
+	return fmt.Sprintf("DryRun: %v\nOutputFile: %s\nTelegramChannels: %v", c.DryRun, c.OutputFile, c.TelegramChannels)
+}
+
+// str2Bool converts string to bool
+func str2Bool(str string) bool {
 	return str == "true"
+}
+
+func getConfig() *Config {
+	// Set default output file
+	outfile := os.Getenv("INPUT_OUTPUT-FILE")
+	if outfile == "" {
+		outfile = defaultOutputFile
+	}
+	return &Config{
+		DryRun:           str2Bool(os.Getenv("INPUT_DRY-RUN")),
+		OutputFile:       outfile,
+		TelegramChannels: strings.Split(os.Getenv("INPUT_TELEGRAM-CHANNELS"), ","),
+	}
 }
 
 func main() {
 	fmt.Println("Running tg2rss " + revision)
+	cfg := getConfig()
 
-	// Print all environment variables
-	for _, e := range os.Environ() {
-		pair := strings.Split(e, "=")
-		Info(pair[0] + "=" + pair[1])
-	}
-
-	dryRun := Str2Bool(os.Getenv("INPUT_DRY-RUN"))
-	outputFile := os.Getenv("INPUT_OUTPUT-FILE")
-	tgChannelsStr := os.Getenv("INPUT_TELEGRAM-CHANNELS")
-
-	if dryRun {
-		Info("Dry run")
-	}
-	Info("Output file: " + outputFile)
-	Info("Telegram channel: " + tgChannelsStr)
-
-	// Split channel name by comma
-	tgChannels := strings.Split(tgChannelsStr, ",")
+	// Print config
+	Info(cfg.String())
 
 	var tgFeed *feeds.Feed
-	tgFeeds := make([]*feeds.Feed, len(tgChannels))
+	tgFeeds := make([]*feeds.Feed, len(cfg.TelegramChannels))
 
 	// Build RSS feed for each channel
-	for i, tgChannel := range tgChannels {
+	for i, tgChannel := range cfg.TelegramChannels {
 		Info("Telegram channel: " + tgChannel)
 		// Parse the page
 		page := parser.Parse(tgChannel)
@@ -58,15 +66,10 @@ func main() {
 	} else {
 		tgFeed = tgFeeds[0]
 	}
-	// Set default output file
-	if outputFile == "" {
-		Warning("Output file is not set. Using default: " + defaultOutputFile)
-		outputFile = defaultOutputFile
-	}
 
 	// Save RSS feed to file
-	if !dryRun {
-		err := feed.SaveToFile(tgFeed, outputFile)
+	if !cfg.DryRun {
+		err := feed.SaveToFile(tgFeed, cfg.OutputFile)
 		if err != nil {
 			log.Fatal(err)
 		}

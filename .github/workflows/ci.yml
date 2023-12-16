@@ -101,7 +101,7 @@ jobs:
         uses: ./
         with:
           output-dir: ${{ env.OUTPUT_DIR }}
-          formats: "xml,atom,json"
+          formats: "rss,atom,json"
           telegram-channels: "@telegram"
 
       - name: Check RSS feed file exists

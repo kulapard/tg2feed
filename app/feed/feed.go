@@ -20,8 +20,8 @@ func Merge(fs []*feeds.Feed) *feeds.Feed {
 	}
 	linksStr := strings.Join(links, ", ")
 	mergedFeed := &feeds.Feed{
-		Title:       "Telegram->RSS",
-		Description: "Telegram channels: " + linksStr,
+		Title:       "Telegram Feed",
+		Description: "Channels: " + linksStr,
 		Link:        &feeds.Link{Href: "https://github.com/kulapard/tg2feed"},
 		Created:     time.Now(),
 	}

@@ -8,9 +8,6 @@ inputs:
   output-file:
     description: "Output file path for RSS feed."
     default: "./rss.xml"
-  dry-run:
-    description: "Do not create RSS feed file, just print it to stdout."
-    default: "false"
   telegram-channels:
     description: "Telegram channels separated by comma. 
                   Excepted formats: `@channel`, `channel` or `https://t.me/channel`"

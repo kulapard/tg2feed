@@ -12,27 +12,29 @@ import (
 
 var revision = "unknown"
 
-const defaultOutputFile = "rss.xml"
+const defaultOutputDir = "./"
 
 // Config represents application configuration
 type Config struct {
-	OutputFile       string
+	OutputDir        string
 	TelegramChannels []string
+	Formats          []string
 }
 
 func (c *Config) String() string {
-	return fmt.Sprintf("OutputFile: %s\nTelegramChannels: %v", c.OutputFile, c.TelegramChannels)
+	return fmt.Sprintf("OutputDir: %s, TelegramChannels: %s, Formats: %s", c.OutputDir, c.TelegramChannels, c.Formats)
 }
 
 func getConfig() *Config {
 	// Set default output file
-	outfile := os.Getenv("INPUT_OUTPUT-FILE")
-	if outfile == "" {
-		outfile = defaultOutputFile
+	outdir := os.Getenv("INPUT_OUTPUT-DIR")
+	if outdir == "" {
+		outdir = defaultOutputDir
 	}
 	return &Config{
-		OutputFile:       outfile,
+		OutputDir:        outdir,
 		TelegramChannels: strings.Split(os.Getenv("INPUT_TELEGRAM-CHANNELS"), ","),
+		Formats:          strings.Split(os.Getenv("INPUT_FORMATS"), ","),
 	}
 }
 
@@ -64,9 +66,8 @@ func main() {
 	}
 
 	// Save RSS feed to file
-	err := feed.SaveToFile(tgFeed, cfg.OutputFile)
+	err := feed.SaveToFile(tgFeed, cfg.OutputDir, cfg.Formats)
 	if err != nil {
 		log.Fatal(err)
 	}
-	Info("RSS feed saved to file: " + cfg.OutputFile)
 }

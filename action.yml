@@ -5,9 +5,14 @@ branding:
   icon: "rss"
   color: "blue"
 inputs:
-  output-file:
-    description: "Output file path for RSS feed."
-    default: "./rss.xml"
+  output-dir:
+    description: "Output directory path for RSS feed. 
+                  If not specified, output file will be created in current directory."
+    default: "./"
+  formats:
+    description: "Output formats separated by comma. 
+                  Excepted formats: `xml`, `json`"
+    default: "xml"
   telegram-channels:
     description: "Telegram channels separated by comma. 
                   Excepted formats: `@channel`, `channel` or `https://t.me/channel`"

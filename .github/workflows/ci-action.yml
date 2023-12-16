@@ -2,6 +2,8 @@ name: test action
 
 on:
   push:
+    branches:
+      - 'main'
     paths: # to run only on changes in the action file
       - 'action.yml'
 
@@ -15,16 +17,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OUTPUT_DIR: ${{ github.workspace }}/output
-      OUTPUT_FILENAME: "rss.xml"
     steps:
       - uses: actions/checkout@v4
       - name: Create RSS feed
         uses: ./
         with:
-          output-file: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
+          output-dir: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
+          formats: "xml,json"
           telegram-channels: "@telegram"
-          dry-run: false
 
       - name: Check RSS feed file exists
         run: |
-          test -f "${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}"
+          test -f "${{ env.OUTPUT_DIR }}/feed.xml"
+          test -f "${{ env.OUTPUT_DIR }}/feed.json"

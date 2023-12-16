@@ -97,7 +97,7 @@ jobs:
       OUTPUT_DIR: ${{ github.workspace }}/output
     steps:
       - uses: actions/checkout@v4
-      - name: Create RSS feed
+      - name: Create feed
         uses: ./
         with:
           output-dir: ${{ env.OUTPUT_DIR }}

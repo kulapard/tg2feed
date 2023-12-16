@@ -2,6 +2,8 @@ name: test action
 
 on:
   push:
+    branches:
+      - 'main'
     paths: # to run only on changes in the action file
       - 'action.yml'
 

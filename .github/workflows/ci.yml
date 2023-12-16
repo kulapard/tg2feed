@@ -104,7 +104,7 @@ jobs:
           formats: "rss,atom,json"
           telegram-channels: "@telegram"
 
-      - name: Check RSS feed file exists
+      - name: Check feed file exists
         run: |
           test -f "${{ env.OUTPUT_DIR }}/rss.xml"
           test -f "${{ env.OUTPUT_DIR }}/atom.xml"

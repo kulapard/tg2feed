@@ -10,7 +10,6 @@ concurrency:
 
 env:
   OUTPUT_DIR: './pages'
-  OUTPUT_FILENAME: 'rss.xml'
 
 jobs:
   build-rss:
@@ -23,7 +22,8 @@ jobs:
       - name: Create RSS feed
         uses: kulapard/tg2rss@main
         with:
-          output-file: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_FILENAME }}
+          output-dir: ${{ env.OUTPUT_DIR }}
+          formats: "xml,json"
           telegram-channels: "@Alexey_Pivo_varov,@addmeto,@kyrillic,@dukaliti,@pmdaily"
 
       - name: Setup Pages

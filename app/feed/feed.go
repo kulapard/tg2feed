@@ -6,7 +6,6 @@ import (
 	"github.com/kulapard/tg2rss/app/parser"
 	"log"
 	"os"
-	"path/filepath"
 	"sort"
 	"strings"
 	"time"
@@ -110,34 +109,66 @@ func GetFeed(page *parser.PageData) *feeds.Feed {
 	return feed
 }
 
-// SaveToFile saves RSS feed to file
-func SaveToFile(f *feeds.Feed, fname string) error {
-	// Generate rss feed string
-	rss, err := f.ToRss()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Check id directory exists
-	outputDir := filepath.Dir(fname)
-	if _, err = os.Stat(outputDir); os.IsNotExist(err) {
-		// Create directory recursively
-		err = os.MkdirAll(outputDir, 0o755) //nolint:gosec // tolerable security risk
-		if err != nil {
-			return err
-		}
-
-		log.Printf("[INFO] directory created: %s", outputDir)
-	}
-
+func save(fname, content string) error {
 	fh, err := os.Create(fname) //nolint:gosec // tolerable security risk
 	if err != nil {
 		return err
 	}
 	defer fh.Close() // nolint
-	if _, err = fh.WriteString(rss); err != nil {
+	if _, err = fh.WriteString(content); err != nil {
 		return err
 	}
-	log.Printf("[INFO] rss feed file saved to %s", fname)
+	log.Printf("[INFO] feed file saved to %s", fname)
+	return nil
+}
+
+func saveToXML(feed *feeds.Feed, dir string) error {
+	fname := dir + "/feed.xml"
+	content, err := feed.ToRss()
+	if err != nil {
+		return err
+	}
+	return save(fname, content)
+}
+
+func saveToJSON(feed *feeds.Feed, dir string) error {
+	fname := dir + "/feed.json"
+	content, err := feed.ToJSON()
+	if err != nil {
+		return err
+	}
+	return save(fname, content)
+}
+
+// SaveToFile saves RSS feed to file
+func SaveToFile(f *feeds.Feed, dir string, formats []string) error {
+	// Check id directory exists
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		// Create directory recursively
+		err = os.MkdirAll(dir, 0o755) //nolint:gosec // tolerable security risk
+		if err != nil {
+			return err
+		}
+
+		log.Printf("[INFO] directory created: %s", dir)
+	}
+
+	// Generate feed string for each format
+	for _, format := range formats {
+		switch format {
+		case "xml":
+			err := saveToXML(f, dir)
+			if err != nil {
+				return err
+			}
+		case "json":
+			err := saveToJSON(f, dir)
+			if err != nil {
+				return err
+			}
+		default:
+			log.Printf("[ERROR] ignoring unknown format: %s", format)
+		}
+	}
 	return nil
 }

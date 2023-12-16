@@ -1,4 +1,4 @@
-# Telegram Feed Builder
+# Telegram Channel Feed Builder
 
 [![Build Status](https://github.com/kulapard/tg2feed/actions/workflows/feed.yml/badge.svg)](https://github.com/kulapard/tg2feed/actions/workflows/feed.yml)
 

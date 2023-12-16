@@ -84,6 +84,12 @@ func getTitle(node *goquery.Selection, _ ...string) (out interface{}, err error)
 // getFormattedHTML returns the formatted html of the selection.
 func getFormattedHTML(node *goquery.Selection, _ ...string) (out interface{}, err error) {
 	var paragraphs []string
+
+	// replace <i class="emoji">emoji</i> with just `emoji`
+	node.Find("i.emoji").Each(func(i int, s *goquery.Selection) {
+		s.ReplaceWithHtml(s.Text())
+	})
+
 	html, err := node.Html()
 	if err != nil {
 		return "", err
@@ -105,10 +111,6 @@ func getFormattedHTML(node *goquery.Selection, _ ...string) (out interface{}, er
 		}
 	}
 	formattedText := strings.Join(paragraphs, "\n")
-
-	// replace <tg-spoiler>text</tg-spoiler> with <spoiler>text</spoiler>
-	formattedText = strings.ReplaceAll(formattedText, "<tg-spoiler>", "<spoiler>")
-	formattedText = strings.ReplaceAll(formattedText, "</tg-spoiler>", "</spoiler>")
 
 	// replace https://t.me/... with https://t.me/s/...
 	formattedText = strings.ReplaceAll(formattedText, "https://t.me/", "https://t.me/s/")

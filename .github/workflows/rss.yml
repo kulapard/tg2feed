@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create RSS feed
-        uses: kulapard/tg2rss@main
+        uses: kulapard/tg2feed@main
         with:
           output-dir: ${{ env.OUTPUT_DIR }}
           formats: "xml,json"

@@ -1,4 +1,4 @@
-module github.com/kulapard/tg2rss
+module github.com/kulapard/tg2feed
 
 go 1.21
 

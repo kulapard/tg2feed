@@ -20,4 +20,4 @@ inputs:
     required: true
 runs:
   using: "docker"
-  image: "docker://ghcr.io/kulapard/tg2rss:main"
+  image: "docker://ghcr.io/kulapard/tg2feed:main"

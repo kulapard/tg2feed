@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/feeds"
-	"github.com/kulapard/tg2rss/app/feed"
-	"github.com/kulapard/tg2rss/app/parser"
+	"github.com/kulapard/tg2feed/app/feed"
+	"github.com/kulapard/tg2feed/app/parser"
 	"log"
 	"os"
 	"strings"
@@ -39,7 +39,7 @@ func getConfig() *Config {
 }
 
 func main() {
-	fmt.Println("Running tg2rss " + revision)
+	fmt.Println("Running tg2feed " + revision)
 	cfg := getConfig()
 
 	// Print config

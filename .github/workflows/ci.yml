@@ -73,7 +73,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          tags: ghcr.io/kulapard/tg2rss:${{ steps.version.outputs.version }}
+          tags: ghcr.io/kulapard/tg2feed:${{ steps.version.outputs.version }}
           push: true
           build-args: |
             REVISION=${{ steps.version.outputs.revision }}
@@ -84,8 +84,8 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/kulapard/tg2rss:${{ steps.version.outputs.version }}
-            ghcr.io/kulapard/tg2rss:latest
+            ghcr.io/kulapard/tg2feed:${{ steps.version.outputs.version }}
+            ghcr.io/kulapard/tg2feed:latest
           push: true
           build-args: |
             REVISION=${{ steps.version.outputs.revision }}

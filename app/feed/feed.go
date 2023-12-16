@@ -3,7 +3,7 @@ package feed
 
 import (
 	"github.com/gorilla/feeds"
-	"github.com/kulapard/tg2rss/app/parser"
+	"github.com/kulapard/tg2feed/app/parser"
 	"log"
 	"os"
 	"sort"
@@ -22,7 +22,7 @@ func Merge(fs []*feeds.Feed) *feeds.Feed {
 	mergedFeed := &feeds.Feed{
 		Title:       "Telegram->RSS",
 		Description: "Telegram channels: " + linksStr,
-		Link:        &feeds.Link{Href: "https://github.com/kulapard/tg2rss"},
+		Link:        &feeds.Link{Href: "https://github.com/kulapard/tg2feed"},
 		Created:     time.Now(),
 	}
 	// Merge items

@@ -122,9 +122,18 @@ func save(fname, content string) error {
 	return nil
 }
 
-func saveToXML(feed *feeds.Feed, dir string) error {
-	fname := dir + "/feed.xml"
+func saveToRSS(feed *feeds.Feed, dir string) error {
+	fname := dir + "/rss.xml"
 	content, err := feed.ToRss()
+	if err != nil {
+		return err
+	}
+	return save(fname, content)
+}
+
+func saveToAtom(feed *feeds.Feed, dir string) error {
+	fname := dir + "/atom.xml"
+	content, err := feed.ToAtom()
 	if err != nil {
 		return err
 	}
@@ -156,8 +165,13 @@ func SaveToFile(f *feeds.Feed, dir string, formats []string) error {
 	// Generate feed string for each format
 	for _, format := range formats {
 		switch format {
-		case "xml":
-			err := saveToXML(f, dir)
+		case "rss":
+			err := saveToRSS(f, dir)
+			if err != nil {
+				return err
+			}
+		case "atom":
+			err := saveToAtom(f, dir)
 			if err != nil {
 				return err
 			}

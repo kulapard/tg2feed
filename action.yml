@@ -11,8 +11,8 @@ inputs:
     default: "./"
   formats:
     description: "Output formats separated by comma. 
-                  Excepted formats: `xml`, `json`"
-    default: "xml"
+                  Excepted formats: `rss`, `atom`, `json`"
+    default: "rss"
   telegram-channels:
     description: "Telegram channels separated by comma. 
                   Excepted formats: `@channel`, `channel` or `https://t.me/channel`"

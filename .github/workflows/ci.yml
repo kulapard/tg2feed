@@ -101,10 +101,11 @@ jobs:
         uses: ./
         with:
           output-dir: ${{ env.OUTPUT_DIR }}
-          formats: "xml,json"
+          formats: "xml,atom,json"
           telegram-channels: "@telegram"
 
       - name: Check RSS feed file exists
         run: |
-          test -f "${{ env.OUTPUT_DIR }}/feed.xml"
+          test -f "${{ env.OUTPUT_DIR }}/rss.xml"
+          test -f "${{ env.OUTPUT_DIR }}/atom.xml"
           test -f "${{ env.OUTPUT_DIR }}/feed.json"

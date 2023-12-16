@@ -23,7 +23,7 @@ jobs:
         uses: kulapard/tg2feed@main
         with:
           output-dir: ${{ env.OUTPUT_DIR }}
-          formats: "xml,json"
+          formats: "xml,atom,json"
           telegram-channels: "@Alexey_Pivo_varov,@addmeto,@kyrillic,@dukaliti,@pmdaily"
 
       - name: Setup Pages

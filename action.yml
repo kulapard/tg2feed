@@ -1,13 +1,13 @@
-name: "Telegram to RSS Action"
-description: "Create RSS feed from Telegram channel"
+name: "Telegram Feed Builder GitHub Action"
+description: "Create feed from Telegram channels"
 author: "Taras Drapalyuk"
 branding:
   icon: "rss"
   color: "blue"
 inputs:
   output-dir:
-    description: "Output directory path for RSS feed. 
-                  If not specified, output file will be created in current directory."
+    description: "Output directory path for feeds. 
+                  If not specified, output files will be created in current directory."
     default: "./"
   formats:
     description: "Output formats separated by comma. 

@@ -1,9 +1,18 @@
-# Telegram to Feed
+# Telegram Feed Builder
 
-[![Build Status](https://github.com/kulapard/tg2feed/actions/workflows/rss.yml/badge.svg)](https://github.com/kulapard/tg2feed/actions/workflows/rss.yml)
+[![Build Status](https://github.com/kulapard/tg2feed/actions/workflows/feed.yml/badge.svg)](https://github.com/kulapard/tg2feed/actions/workflows/feed.yml)
 
-Builds feeds from
-the [Telegram channels](https://github.com/kulapard/tg2feed/blob/8f09dc9c81affb4d2e3e334c880cd6e5bf3a01f5/.github/workflows/rss.yml#L28):
+Builds feeds from the Telegram channels.
+
+Telegram channels:
+
+- [@Alexey_Pivo_varov](https://t.me/Alexey_Pivo_varov)
+- [@addmeto](https://t.me/addmeto)
+- [@kyrillic](https://t.me/kyrillic)
+- [@dukaliti](https://t.me/dukaliti)
+- [@pmdaily](https://t.me/pmdaily)
+
+Output formats:
 
 - [RSS](https://kulapard.github.io/tg2feed/rss.xml)
 - [Atom](https://kulapard.github.io/tg2feed/atom.xml)

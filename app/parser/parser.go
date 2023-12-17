@@ -207,7 +207,7 @@ type PageData struct {
 		Previews []struct {
 			Link        string `pagser:"->attr(href)"`
 			ImageURL    string `pagser:".link_preview_image->getImageURL()"`
-			VideoURL    string `pagser:".link_preview_video_wrap->getVideoURL()"`
+			VideoURL    string `pagser:"video->attr(src)"`
 			SiteName    string `pagser:".link_preview_site_name->text()"`
 			Title       string `pagser:".link_preview_title->text()"`
 			Description string `pagser:".link_preview_description->getFormattedHTML()"`

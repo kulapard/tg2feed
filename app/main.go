@@ -13,6 +13,8 @@ import (
 var revision = "unknown"
 
 const defaultOutputDir = "./"
+const defaultFormat = "rss"
+const defaultChannel = "@telegram"
 
 // Config represents application configuration
 type Config struct {
@@ -26,15 +28,30 @@ func (c *Config) String() string {
 }
 
 func getConfig() *Config {
-	// Set default output file
+	// Set default output dir
 	outdir := os.Getenv("INPUT_OUTPUT-DIR")
 	if outdir == "" {
 		outdir = defaultOutputDir
 	}
+	// Set default Telegram channels
+	chStr := os.Getenv("INPUT_TELEGRAM-CHANNELS")
+	if chStr == "" {
+		chStr = defaultChannel
+	}
+	channels := strings.Split(chStr, ",")
+
+	// Set default formats
+	formatStr := os.Getenv("INPUT_FORMATS")
+	if formatStr == "" {
+		formatStr = defaultFormat
+	}
+
+	formats := strings.Split(formatStr, ",")
+
 	return &Config{
 		OutputDir:        outdir,
-		TelegramChannels: strings.Split(os.Getenv("INPUT_TELEGRAM-CHANNELS"), ","),
-		Formats:          strings.Split(os.Getenv("INPUT_FORMATS"), ","),
+		TelegramChannels: channels,
+		Formats:          formats,
 	}
 }
 
@@ -63,6 +80,10 @@ func main() {
 		Info(fmt.Sprintf("Merged %d RSS feeds", len(tgFeeds)))
 	} else {
 		tgFeed = tgFeeds[0]
+	}
+
+	if tgFeed == nil {
+		log.Fatal("RSS feed is empty")
 	}
 
 	// Save RSS feed to file

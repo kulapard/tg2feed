@@ -139,12 +139,6 @@ func getImageURL(node *goquery.Selection, _ ...string) (out interface{}, err err
 	return imageURL, nil
 }
 
-// getVideoURL returns the video url of the selection.
-func getVideoURL(node *goquery.Selection, _ ...string) (out interface{}, err error) {
-	videoURL, _ := node.Find("video").Attr("src")
-	return videoURL, nil
-}
-
 // getPostLink returns the post link.
 func getPostLink(node *goquery.Selection, args ...string) (out interface{}, err error) {
 	if len(args) < 1 {
@@ -205,8 +199,8 @@ type PageData struct {
 		ID      string    `pagser:"->getGUID()"`
 		Created time.Time `pagser:".tgme_widget_message_date time->getCreated()"`
 		Video   struct {
-			URL string `pagser:"->getVideoURL()"`
-		} `pagser:".tgme_widget_message_video_player"`
+			URL string `pagser:"->attr(src)"`
+		} `pagser:"video"`
 		Images []struct {
 			URL string `pagser:"->getImageURL()"`
 		} `pagser:".tgme_widget_message_photo_wrap"`
@@ -221,16 +215,25 @@ type PageData struct {
 	} `pagser:".tgme_widget_message_wrap"`
 }
 
+// getChannelWebURL returns the channel web url based on the channel name
+func getChannelWebURL(chName string) string {
+	// Remove @ from chName name
+	chName = strings.ReplaceAll(chName, "@", "")
+
+	// Remove prefix https://t.me/ from channel name
+	chName = strings.ReplaceAll(chName, "https://t.me/", "")
+
+	// Remove spaces from chName name
+	chName = strings.TrimSpace(chName)
+
+	// Build web url
+	return fmt.Sprintf("https://t.me/s/%s", chName)
+}
+
 // Parse parses the page and returns the data model
-func Parse(channel string) PageData {
-	// Remove @ from channel name
-	channel = strings.ReplaceAll(channel, "@", "")
-
-	// Remove spaces from channel name
-	channel = strings.ReplaceAll(channel, " ", "")
-
-	// Build channel url
-	channelURL := fmt.Sprintf("https://t.me/s/%s", channel)
+func Parse(chName string) PageData {
+	// Build web url
+	channelURL := getChannelWebURL(chName)
 
 	// New default config
 	p := pagser.New()
@@ -242,7 +245,6 @@ func Parse(channel string) PageData {
 	p.RegisterFunc("getPostLink", getPostLink)
 	p.RegisterFunc("getGUID", getGUID)
 	p.RegisterFunc("getCreated", getCreated)
-	p.RegisterFunc("getVideoURL", getVideoURL)
 
 	// data parser model
 	var data PageData

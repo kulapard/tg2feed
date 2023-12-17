@@ -2,8 +2,10 @@ name: Test and build
 
 on:
   push:
-    branches:
+    branches: [ "main" ]
     tags:
+  pull_request:
+    branches: [ "main" ]
 
 # one running workflow per branch, others will wait
 concurrency:

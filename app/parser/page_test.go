@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-const testPageHtml = `
+const testPageHTML = `
 <html><body>
 <div class="tgme_channel_info_header_title_wrap">
 	<div class="tgme_channel_info_header_title"><span dir="auto">Some title</span></div>
@@ -21,7 +21,7 @@ const testPageHtml = `
 `
 
 func TestGetPageTitle(t *testing.T) {
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(testPageHtml))
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(testPageHTML))
 	assert.Nil(t, err)
 
 	title := GetPageTitle(doc)
@@ -29,7 +29,7 @@ func TestGetPageTitle(t *testing.T) {
 }
 
 func TestGetPageLink(t *testing.T) {
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(testPageHtml))
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(testPageHTML))
 	assert.Nil(t, err)
 
 	link := GetPageLink(doc)
@@ -37,9 +37,9 @@ func TestGetPageLink(t *testing.T) {
 }
 
 func TestGetPageDescription(t *testing.T) {
-	doc, err := goquery.NewDocumentFromReader(strings.NewReader(testPageHtml))
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(testPageHTML))
 	assert.Nil(t, err)
 
-	description := GetPageDescriptionHtml(doc)
+	description := GetPageDescriptionHTML(doc)
 	assert.Equal(t, description, "Some <b>page</b> description")
 }

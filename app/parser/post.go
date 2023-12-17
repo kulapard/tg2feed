@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// Post represents a post from the telegram channel
 type Post struct {
 	Title    string
 	Text     string
@@ -28,6 +29,7 @@ type Post struct {
 	}
 }
 
+// GetPosts returns all posts from the page
 func GetPosts(doc *goquery.Document) []*Post {
 	var posts []*Post
 
@@ -46,6 +48,8 @@ func GetPosts(doc *goquery.Document) []*Post {
 	})
 	return posts
 }
+
+// GetPostTitle returns the post title
 func GetPostTitle(text string) string {
 	// Leave text until the first <br> or <br/>
 	title := strings.TrimRight(text, "<br")
@@ -60,6 +64,7 @@ func GetPostTitle(text string) string {
 	return ShortenText(title, 30)
 }
 
+// GetPostTextHTML returns the post text as HTML
 func GetPostTextHTML(s *goquery.Selection) string {
 	s = s.Find(".tgme_widget_message_text")
 
@@ -87,6 +92,7 @@ func GetPostTextHTML(s *goquery.Selection) string {
 
 }
 
+// GetPostLink returns the post link
 func GetPostLink(s *goquery.Selection) string {
 	baseURL, err := url.Parse("https://t.me/s/")
 	if err != nil {
@@ -103,6 +109,7 @@ func GetPostLink(s *goquery.Selection) string {
 	return baseURL.ResolveReference(hrefURL).String()
 }
 
+// GetPostCreated returns the post created datetime
 func GetPostCreated(s *goquery.Selection) time.Time {
 	created, exists := s.Find(".tgme_widget_message_date time").Attr("datetime")
 	if !exists {
@@ -117,6 +124,7 @@ func GetPostCreated(s *goquery.Selection) time.Time {
 	return ts
 }
 
+// GetVideos returns all videos from the post
 func GetVideos(s *goquery.Selection) []string {
 	var videos []string
 	s.Find("video").Each(func(i int, s *goquery.Selection) {
@@ -128,6 +136,7 @@ func GetVideos(s *goquery.Selection) []string {
 	return videos
 }
 
+// extractImageURLFromStyle extracts image URL from the style attribute
 func extractImageURLFromStyle(s *goquery.Selection) string {
 	style, exists := s.Attr("style")
 	if !exists {
@@ -148,6 +157,7 @@ func extractImageURLFromStyle(s *goquery.Selection) string {
 	return ""
 }
 
+// GetImages returns all images from the post
 func GetImages(s *goquery.Selection) []string {
 	var images []string
 	s.Find(".tgme_widget_message_photo_wrap").Each(func(i int, s *goquery.Selection) {

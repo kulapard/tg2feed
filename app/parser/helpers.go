@@ -10,6 +10,7 @@ import (
 	"unicode"
 )
 
+// GetSafeHTML returns the HTML string without unsafe tags
 func GetSafeHTML(s *goquery.Selection) string {
 	// Fix emoji
 	s = FixEmoji(s)
@@ -30,6 +31,7 @@ func GetSafeHTML(s *goquery.Selection) string {
 	return strings.TrimSpace(html)
 }
 
+// ParseDateTime parses the datetime string and returns the time.Time object
 func ParseDateTime(dt string) (time.Time, error) {
 	if dt == "" {
 		return time.Now(), fmt.Errorf("can't parse empty datetime")
@@ -40,6 +42,7 @@ func ParseDateTime(dt string) (time.Time, error) {
 	return time.Now(), fmt.Errorf("can't parse datetime %s", dt)
 }
 
+// GetGUID returns the GUID for the specified string
 func GetGUID(str string) string {
 	hash := sha256.Sum256([]byte(str))
 	hashStr := hex.EncodeToString(hash[:])

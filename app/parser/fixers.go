@@ -2,6 +2,7 @@ package parser
 
 import "github.com/PuerkitoBio/goquery"
 
+// FixEmoji removes all emoji tags
 func FixEmoji(s *goquery.Selection) *goquery.Selection {
 	// Clone the selection to avoid modifying the original
 	s = s.Clone()
@@ -17,6 +18,7 @@ func FixEmoji(s *goquery.Selection) *goquery.Selection {
 	return s
 }
 
+// FixLinks removes all attributes from links
 func FixLinks(s *goquery.Selection) *goquery.Selection {
 	// Clone the selection to avoid modifying the original
 	s = s.Clone()

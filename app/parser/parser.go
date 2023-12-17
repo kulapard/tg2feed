@@ -27,12 +27,13 @@ func GetChannelWebURL(chName string) string {
 	return fmt.Sprintf("https://t.me/s/%s", chName)
 }
 
+// Parse returns the page object
 func Parse(chName string) *Page {
 	// Build web url
 	channelURL := GetChannelWebURL(chName)
 
 	// Request the HTML page.
-	res, err := http.Get(channelURL)
+	res, err := http.Get(channelURL) //nolint:gosec
 	if err != nil {
 		log.Fatal(err)
 	}

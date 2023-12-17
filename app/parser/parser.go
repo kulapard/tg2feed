@@ -86,8 +86,15 @@ func getFormattedHTML(node *goquery.Selection, _ ...string) (out interface{}, er
 	var paragraphs []string
 
 	// replace <i class="emoji">emoji</i> with just `emoji`
-	node.Find("i.emoji").Each(func(i int, s *goquery.Selection) {
+	node.Find("i.emoji").Each(func(_ int, s *goquery.Selection) {
 		s.ReplaceWithHtml(s.Text())
+	})
+
+	// Clean up links from attributes: target, rel, onclick
+	node.Find("a").Each(func(_ int, s *goquery.Selection) {
+		s.RemoveAttr("target")
+		s.RemoveAttr("rel")
+		s.RemoveAttr("onclick")
 	})
 
 	html, err := node.Html()

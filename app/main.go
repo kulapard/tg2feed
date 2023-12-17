@@ -70,7 +70,7 @@ func main() {
 		Info("Building RSS feed for Telegram channel: " + tgChannel)
 		// Parse the page
 		page := parser.Parse(tgChannel)
-		tgFeeds[i] = feed.GetFeed(&page)
+		tgFeeds[i] = feed.GetFeed(page)
 	}
 
 	// Merge all feeds if there are more than one

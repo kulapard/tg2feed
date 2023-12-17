@@ -128,7 +128,7 @@ func GetVideos(s *goquery.Selection) []string {
 	return videos
 }
 
-func extractImageURL(s *goquery.Selection) string {
+func extractImageURLFromStyle(s *goquery.Selection) string {
 	style, exists := s.Attr("style")
 	if !exists {
 		return ""
@@ -151,7 +151,12 @@ func extractImageURL(s *goquery.Selection) string {
 func GetImages(s *goquery.Selection) []string {
 	var images []string
 	s.Find(".tgme_widget_message_photo_wrap").Each(func(i int, s *goquery.Selection) {
-		if imageURL := extractImageURL(s); imageURL != "" {
+		if imageURL := extractImageURLFromStyle(s); imageURL != "" {
+			images = append(images, imageURL)
+		}
+	})
+	s.Find(".tgme_widget_message_photo_wrap img").Each(func(i int, s *goquery.Selection) {
+		if imageURL, exists := s.Attr("src"); exists {
 			images = append(images, imageURL)
 		}
 	})

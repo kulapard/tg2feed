@@ -27,7 +27,7 @@ func GetChannelWebURL(chName string) string {
 	return fmt.Sprintf("https://t.me/s/%s", chName)
 }
 
-func Parse2(chName string) *Page {
+func Parse(chName string) *Page {
 	// Build web url
 	channelURL := GetChannelWebURL(chName)
 

@@ -40,7 +40,7 @@ func Merge(fs []*feeds.Feed) *feeds.Feed {
 }
 
 // GetFeed returns RSS feed for Telegram channel web page
-func GetFeed(page *parser.PageData) *feeds.Feed {
+func GetFeed(page *parser.Page) *feeds.Feed {
 	now := time.Now()
 	feed := &feeds.Feed{
 		Title:       page.Title,
@@ -67,33 +67,17 @@ func GetFeed(page *parser.PageData) *feeds.Feed {
 		var enclosure *feeds.Enclosure
 		if len(post.Images) > 0 {
 			enclosure = &feeds.Enclosure{
-				Url:    post.Images[0].URL,
+				Url:    post.Images[0],
 				Length: "0", //todo: get length
 				Type:   "image/jpeg",
 			}
-		} else if len(post.Previews) > 0 {
-			if post.Previews[0].VideoURL != "" {
-				enclosure = &feeds.Enclosure{
-					Url:    post.Previews[0].VideoURL,
-					Length: "0", //todo: get length
-					Type:   "video/mp4",
-				}
-			} else if post.Previews[0].ImageURL != "" {
-				enclosure = &feeds.Enclosure{
-					Url:    post.Previews[0].ImageURL,
-					Length: "0", //todo: get length
-					Type:   "image/jpeg",
-				}
-			}
-		}
-		if enclosure == nil && post.Video.URL != "" {
+		} else if len(post.Videos) > 0 {
 			enclosure = &feeds.Enclosure{
-				Url:    post.Video.URL,
+				Url:    post.Videos[0],
 				Length: "0", //todo: get length
 				Type:   "video/mp4",
 			}
 		}
-
 		feed.Items[i] = &feeds.Item{
 			Id:          post.ID,
 			Title:       post.Title,

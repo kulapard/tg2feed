@@ -15,8 +15,8 @@ func TestFixEmoji(t *testing.T) {
 		{`<html><body><p><i class="emoji">👍</i></p></body></html>`, `<p>👍</p>`},
 		{`<html><body><p><tg-emoji>👍</tg-emoji></p></body></html>`, `<p>👍</p>`},
 	}
-	for _, tt := range tbl {
-		doc, err := goquery.NewDocumentFromReader(strings.NewReader(tt.html))
+	for _, tb := range tbl {
+		doc, err := goquery.NewDocumentFromReader(strings.NewReader(tb.html))
 		assert.Nil(t, err)
 
 		body := doc.Find("body")
@@ -28,7 +28,7 @@ func TestFixEmoji(t *testing.T) {
 		fixedBodyHTML, err := fixedBody.Html()
 		assert.Nil(t, err)
 
-		assert.Equal(t, tt.fixedBody, fixedBodyHTML)
+		assert.Equal(t, tb.fixedBody, fixedBodyHTML)
 	}
 }
 
@@ -47,4 +47,21 @@ func TestFixLinks(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, `<a href="https://t.me/s/telegram">telegram</a>`, fixedBodyHTML)
+}
+
+func TestRemoveUnsafeTags(t *testing.T) {
+	const html = `<body><i>t</i><img src="img.jpg"><b>e</b><a href="link">s<to-remove>t</to-remove></a><br><br/></body>`
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	assert.Nil(t, err)
+
+	body := doc.Find("body")
+
+	fixedBody := RemoveUnsafeTags(body)
+
+	assert.NotEqualf(t, body, fixedBody, "body and fixedBody should not be equal")
+
+	fixedBodyHTML, err := fixedBody.Html()
+	assert.Nil(t, err)
+
+	assert.Equal(t, `<i>t</i><b>e</b><a href="link">st</a><br/><br/>`, fixedBodyHTML)
 }

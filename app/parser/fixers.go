@@ -31,3 +31,16 @@ func FixLinks(s *goquery.Selection) *goquery.Selection {
 	})
 	return s
 }
+
+func RemoveUnsafeTags(s *goquery.Selection) *goquery.Selection {
+	// Clone the selection to avoid modifying the original
+	s = s.Clone()
+
+	// Remove all tags except <a>, <i>, <b>, <br>
+	s.Find("*").Each(func(i int, s *goquery.Selection) {
+		if !s.Is("a, i, b, br") {
+			s.ReplaceWithHtml(s.Text())
+		}
+	})
+	return s
+}

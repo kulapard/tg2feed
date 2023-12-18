@@ -208,13 +208,13 @@ func TestSaveToFile(t *testing.T) {
 		{[]string{"wrong"}, nil},
 		{nil, nil},
 	}
-	for _, tt := range tbl {
+	for _, tb := range tbl {
 		// Create temporary test dir
 		existingDir := createTestDir(t)
 		newDir := existingDir + "/new"
 
 		for _, dir := range []string{existingDir, newDir} {
-			err := SaveToFile(feed, dir, tt.formats)
+			err := SaveToFile(feed, dir, tb.formats)
 			assert.Nil(t, err)
 
 			// Get list of created files
@@ -222,10 +222,10 @@ func TestSaveToFile(t *testing.T) {
 
 			// Sort both slices before comparison
 			slices.Sort(createdFiles)
-			slices.Sort(tt.createdFiles)
+			slices.Sort(tb.createdFiles)
 
 			// Compare created files with expected
-			assert.Equal(t, tt.createdFiles, createdFiles)
+			assert.Equal(t, tb.createdFiles, createdFiles)
 		}
 
 		// Remove test dirs

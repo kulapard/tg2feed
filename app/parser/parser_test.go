@@ -16,8 +16,8 @@ func TestGetChannelWebURL(t *testing.T) {
 		{`https://t.me/s/telegram`, `https://t.me/s/telegram`},
 		{`https://t.me/s/telegram?foo=bar#extra`, `https://t.me/s/telegram`},
 	}
-	for _, tt := range tbl {
-		url := GetChannelWebURL(tt.chName)
-		assert.Equal(t, tt.chURL, url)
+	for _, tb := range tbl {
+		url := GetChannelWebURL(tb.chName)
+		assert.Equal(t, tb.chURL, url)
 	}
 }

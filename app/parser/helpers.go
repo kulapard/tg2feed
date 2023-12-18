@@ -16,10 +16,14 @@ func GetSafeHTML(s *goquery.Selection) string {
 	// Fix links
 	s = FixLinks(s)
 
+	// Remove unsafe tags
+	s = RemoveUnsafeTags(s)
+
 	html, err := s.Html()
 	if err != nil {
 		return ""
 	}
+
 	// Remove new lines
 	html = strings.ReplaceAll(html, "\n", "")
 

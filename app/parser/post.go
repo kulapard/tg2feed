@@ -42,8 +42,8 @@ func GetPosts(doc *goquery.Document) []*Post {
 
 // GetPostTitle returns the post title
 func GetPostTitle(text string) string {
-	// Leave text until the first <br> or <br/>
-	title := strings.TrimRight(text, "<br")
+	// Get only string before the first <br>
+	title := strings.Split(text, "<br")[0]
 
 	// Remove all tags using regexp
 	title = regexp.MustCompile("<[^>]*>").ReplaceAllString(title, "")
@@ -156,7 +156,7 @@ func GetImages(s *goquery.Selection) []string {
 			images = append(images, imageURL)
 		}
 	})
-	s.Find(".tgme_widget_message_photo_wrap img").Each(func(i int, s *goquery.Selection) {
+	s.Find("img").Each(func(i int, s *goquery.Selection) {
 		if imageURL, exists := s.Attr("src"); exists {
 			images = append(images, imageURL)
 		}

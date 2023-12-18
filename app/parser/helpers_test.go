@@ -22,6 +22,13 @@ func TestGetSafeHTML(t *testing.T) {
 
 	safeHTML := GetSafeHTML(body)
 	assert.Equal(t, `<a href="https://t.me/s/telegram">telegram</a> 👍 👍`, safeHTML)
+
+	// Empty body
+	doc, err = goquery.NewDocumentFromReader(strings.NewReader(""))
+	assert.Nil(t, err)
+	body = doc.Find("body")
+	safeHTML = GetSafeHTML(body)
+	assert.Equal(t, "", safeHTML)
 }
 
 func TestParseDateTime(t *testing.T) {

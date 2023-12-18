@@ -5,6 +5,9 @@ import (
 	"github.com/gorilla/feeds"
 	"github.com/kulapard/tg2feed/app/parser"
 	"github.com/stretchr/testify/assert"
+	"os"
+	"path/filepath"
+	"slices"
 	"testing"
 	"time"
 )
@@ -139,4 +142,72 @@ func TestMerge_Sort(t *testing.T) {
 	assert.Equal(t, "Post 4", feed.Items[3].Title)
 	assert.Equal(t, "Post 5", feed.Items[4].Title)
 	assert.Equal(t, "Post 6", feed.Items[5].Title)
+}
+
+func getFeedToSave() *feeds.Feed {
+	feed := &feeds.Feed{
+		Title: "Channel 1",
+		Link:  &feeds.Link{Href: "https://t.me/s/telegram1"},
+		Items: []*feeds.Item{
+			{Title: "Post 1", Link: &feeds.Link{Href: "https://t.me/s/telegram1/1"}},
+			{Title: "Post 2", Link: &feeds.Link{Href: "https://t.me/s/telegram1/2"}},
+		},
+	}
+	return feed
+}
+
+func createTestDir(t *testing.T) string {
+	// Create temporary test dir
+	tmpDir := "/tmp/test_dir"
+	if err := os.Mkdir(tmpDir, 0o777); err != nil {
+		t.Fatal(err)
+	}
+	return tmpDir
+}
+
+func removeTestDir(t *testing.T, tmpDir string) {
+	// Remove temporary test dir
+	if err := os.RemoveAll(tmpDir); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestSaveToFile(t *testing.T) {
+	feed := getFeedToSave()
+
+	tbl := []struct {
+		formats      []string
+		createdFiles []string
+	}{
+		{[]string{"rss"}, []string{"rss.xml"}},
+		{[]string{"rss", "atom"}, []string{"rss.xml", "atom.xml"}},
+		{[]string{"rss", "atom", "json"}, []string{"rss.xml", "atom.xml", "feed.json"}},
+	}
+	for _, tt := range tbl {
+		// Create temporary test dir
+		tmpDir := createTestDir(t)
+
+		err := SaveToFile(feed, tmpDir, tt.formats)
+		assert.Nil(t, err)
+
+		// Get list of created files
+		var createdFiles []string
+		err = filepath.Walk(tmpDir, func(path string, info os.FileInfo, err error) error {
+			if !info.IsDir() {
+				createdFiles = append(createdFiles, info.Name())
+			}
+			return nil
+		})
+
+		// Sort both slices before comparison
+		slices.Sort(createdFiles)
+		slices.Sort(tt.createdFiles)
+
+		// Compare created files with expected
+		assert.Equal(t, tt.createdFiles, createdFiles)
+
+		// Remove temporary test dir
+		removeTestDir(t, tmpDir)
+
+	}
 }

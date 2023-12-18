@@ -60,14 +60,14 @@ func main() {
 	cfg := getConfig()
 
 	// Print config
-	Info(cfg.String())
+	log.Printf("[INFO] Config: %s", cfg)
 
 	var tgFeed *feeds.Feed
 	tgFeeds := make([]*feeds.Feed, len(cfg.TelegramChannels))
 
 	// Build RSS feed for each channel
 	for i, tgChannel := range cfg.TelegramChannels {
-		Info("Building RSS feed for Telegram channel: " + tgChannel)
+		log.Printf("[INFO] Building RSS feed for Telegram channel: " + tgChannel)
 		// Parse the page
 		page, err := parser.Parse(tgChannel)
 		if err != nil {
@@ -80,7 +80,7 @@ func main() {
 	if len(tgFeeds) > 1 {
 		// Merge all feeds
 		tgFeed = feed.Merge(tgFeeds)
-		Info(fmt.Sprintf("Merged %d RSS feeds", len(tgFeeds)))
+		log.Printf("[INFO] Merged %d RSS feeds", len(tgFeeds))
 	} else {
 		tgFeed = tgFeeds[0]
 	}

@@ -5,8 +5,8 @@ import (
 	"github.com/gorilla/feeds"
 	"github.com/kulapard/tg2feed/app/parser"
 	"github.com/stretchr/testify/assert"
+	"log"
 	"os"
-	"path/filepath"
 	"slices"
 	"testing"
 	"time"
@@ -22,6 +22,7 @@ func TestGetFeed(t *testing.T) {
 		Posts: []*parser.Post{
 			{Title: "Post 2", Link: "https://t.me/s/telegram/2", Text: "Post 2 text", Created: now.Add(time.Hour * -2), Images: []string{"https://telegram.org/img/2.png"}},
 			{Title: "Post 1", Link: "https://t.me/s/telegram/1", Text: "Post 1 text", Created: now.Add(time.Hour * -1)},
+			{Title: "Post 3", Link: "https://t.me/s/telegram/3", Text: "Post 3 text", Created: now.Add(time.Hour * -3), Videos: []string{"https://telegram.org/video/3.mp4"}},
 		},
 	}
 	feed := GetFeed(page)
@@ -32,7 +33,7 @@ func TestGetFeed(t *testing.T) {
 	assert.Equal(t, "Telegram channel description", feed.Description)
 	assert.Equal(t, "https://telegram.org/img/t_logo.png", feed.Image.Url)
 
-	assert.Equal(t, 2, len(feed.Items))
+	assert.Equal(t, 3, len(feed.Items))
 
 	item1 := feed.Items[0]
 	assert.Equal(t, "Post 1", item1.Title)
@@ -45,6 +46,12 @@ func TestGetFeed(t *testing.T) {
 	assert.Equal(t, "Post 2 text", item2.Description)
 	assert.Equal(t, "https://t.me/s/telegram/2", item2.Link.Href)
 	assert.Equal(t, "https://telegram.org/img/2.png", item2.Enclosure.Url)
+
+	item3 := feed.Items[2]
+	assert.Equal(t, "Post 3", item3.Title)
+	assert.Equal(t, "Post 3 text", item3.Description)
+	assert.Equal(t, "https://t.me/s/telegram/3", item3.Link.Href)
+	assert.Equal(t, "https://telegram.org/video/3.mp4", item3.Enclosure.Url)
 }
 
 func TestGetGUID(t *testing.T) {
@@ -171,19 +178,21 @@ func removeTestDir(t *testing.T, tmpDir string) {
 		t.Fatal(err)
 	}
 }
-func getListOfFiles(t *testing.T, tmpDir string) []string {
-	// Get list of created files
-	var createdFiles []string
-	err := filepath.Walk(tmpDir, func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() {
-			createdFiles = append(createdFiles, info.Name())
-		}
-		return nil
-	})
+
+// Get list of files in the directory
+func getListOfFiles(dir string) []string {
+	var files []string
+
+	entries, err := os.ReadDir(dir)
 	if err != nil {
-		t.Fatal(err)
+		log.Fatal(err)
 	}
-	return createdFiles
+	for _, e := range entries {
+		if !e.IsDir() {
+			files = append(files, e.Name())
+		}
+	}
+	return files
 }
 
 func TestSaveToFile(t *testing.T) {
@@ -196,26 +205,32 @@ func TestSaveToFile(t *testing.T) {
 		{[]string{"rss"}, []string{"rss.xml"}},
 		{[]string{"rss", "atom"}, []string{"rss.xml", "atom.xml"}},
 		{[]string{"rss", "atom", "json"}, []string{"rss.xml", "atom.xml", "feed.json"}},
+		{[]string{"wrong"}, nil},
+		{nil, nil},
 	}
 	for _, tt := range tbl {
 		// Create temporary test dir
-		tmpDir := createTestDir(t)
+		existingDir := createTestDir(t)
+		newDir := existingDir + "/new"
 
-		err := SaveToFile(feed, tmpDir, tt.formats)
-		assert.Nil(t, err)
+		for _, dir := range []string{existingDir, newDir} {
+			err := SaveToFile(feed, dir, tt.formats)
+			assert.Nil(t, err)
 
-		// Get list of created files
-		createdFiles := getListOfFiles(t, tmpDir)
+			// Get list of created files
+			createdFiles := getListOfFiles(dir)
 
-		// Sort both slices before comparison
-		slices.Sort(createdFiles)
-		slices.Sort(tt.createdFiles)
+			// Sort both slices before comparison
+			slices.Sort(createdFiles)
+			slices.Sort(tt.createdFiles)
 
-		// Compare created files with expected
-		assert.Equal(t, tt.createdFiles, createdFiles)
+			// Compare created files with expected
+			assert.Equal(t, tt.createdFiles, createdFiles)
+		}
 
-		// Remove temporary test dir
-		removeTestDir(t, tmpDir)
+		// Remove test dirs
+		removeTestDir(t, existingDir)
+		removeTestDir(t, newDir)
 
 	}
 }

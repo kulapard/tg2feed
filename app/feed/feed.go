@@ -104,8 +104,8 @@ func GetGUID(str string) string {
 	return hashStr
 }
 
-func save(fname, content string) error {
-	fh, err := os.Create(fname) //nolint:gosec // tolerable security risk
+func save(fileName, content string) error {
+	fh, err := os.Create(fileName) //nolint:gosec // tolerable security risk
 	if err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func save(fname, content string) error {
 	if _, err = fh.WriteString(content); err != nil {
 		return err
 	}
-	log.Printf("[INFO] feed file saved to %s", fname)
+	log.Printf("[INFO] feed file saved to %s", fileName)
 	return nil
 }
 

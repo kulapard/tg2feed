@@ -18,11 +18,10 @@ func GetPageTitle(doc *goquery.Document) string {
 
 // GetPageLink returns the page link
 func GetPageLink(doc *goquery.Document) string {
-	link, exists := doc.Find(".tgme_channel_info_header_username a").Attr("href")
-	if !exists {
-		link = ""
+	if link, exists := doc.Find(".tgme_channel_info_header_username a").Attr("href"); exists {
+		return link
 	}
-	return link
+	return ""
 }
 
 // GetPageDescriptionHTML returns the page description html
@@ -32,11 +31,10 @@ func GetPageDescriptionHTML(doc *goquery.Document) string {
 
 // GetPageImageURL returns the page image url
 func GetPageImageURL(doc *goquery.Document) string {
-	imgURL, exists := doc.Find(".tgme_page_photo_image img").Attr("src")
-	if !exists {
-		imgURL = ""
+	if imgURL, exists := doc.Find(".tgme_page_photo_image img").Attr("src"); exists {
+		return imgURL
 	}
-	return imgURL
+	return ""
 }
 
 // GetPage returns the page object

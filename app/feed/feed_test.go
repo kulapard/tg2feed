@@ -159,7 +159,7 @@ func getFeedToSave() *feeds.Feed {
 func createTestDir(t *testing.T) string {
 	// Create temporary test dir
 	tmpDir := "/tmp/test_dir"
-	if err := os.Mkdir(tmpDir, 0o777); err != nil {
+	if err := os.Mkdir(tmpDir, 0o750); err != nil {
 		t.Fatal(err)
 	}
 	return tmpDir
@@ -170,6 +170,20 @@ func removeTestDir(t *testing.T, tmpDir string) {
 	if err := os.RemoveAll(tmpDir); err != nil {
 		t.Fatal(err)
 	}
+}
+func getListOfFiles(t *testing.T, tmpDir string) []string {
+	// Get list of created files
+	var createdFiles []string
+	err := filepath.Walk(tmpDir, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			createdFiles = append(createdFiles, info.Name())
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return createdFiles
 }
 
 func TestSaveToFile(t *testing.T) {
@@ -191,13 +205,7 @@ func TestSaveToFile(t *testing.T) {
 		assert.Nil(t, err)
 
 		// Get list of created files
-		var createdFiles []string
-		err = filepath.Walk(tmpDir, func(path string, info os.FileInfo, err error) error {
-			if !info.IsDir() {
-				createdFiles = append(createdFiles, info.Name())
-			}
-			return nil
-		})
+		createdFiles := getListOfFiles(t, tmpDir)
 
 		// Sort both slices before comparison
 		slices.Sort(createdFiles)

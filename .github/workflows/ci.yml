@@ -25,7 +25,6 @@ jobs:
 
       - name: Build and test
         run: go test -race -v -timeout=100s -covermode=atomic -coverprofile=coverage.txt ./...
-        working-directory: app
         env:
           GO111MODULE: on
           GOFLAGS: "-mod=vendor"

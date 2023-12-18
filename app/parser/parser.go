@@ -25,15 +25,11 @@ func GetChannelWebURL(chName string) string {
 	chName = strings.TrimSpace(chName)
 
 	// Build web url
-	baseURL, err := url.Parse("https://t.me/s/")
-	if err != nil {
-		return ""
+	baseURL, _ := url.Parse("https://t.me/s/")
+	if chPath, err := url.Parse(chName); err == nil {
+		return baseURL.JoinPath(chPath.Path).String()
 	}
-	chPath, err := url.Parse(chName)
-	if err != nil {
-		return ""
-	}
-	return baseURL.JoinPath(chPath.Path).String()
+	return ""
 }
 
 // Parse returns the page object

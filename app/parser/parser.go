@@ -6,6 +6,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -24,29 +25,36 @@ func GetChannelWebURL(chName string) string {
 	chName = strings.TrimSpace(chName)
 
 	// Build web url
-	return fmt.Sprintf("https://t.me/s/%s", chName)
+	baseURL, err := url.Parse("https://t.me/s/")
+	if err != nil {
+		return ""
+	}
+	chPath, err := url.Parse(chName)
+	if err != nil {
+		return ""
+	}
+	return baseURL.JoinPath(chPath.Path).String()
 }
 
 // Parse returns the page object
-func Parse(chName string) *Page {
+func Parse(chName string) (*Page, error) {
 	// Build web url
 	channelURL := GetChannelWebURL(chName)
 
 	// Request the HTML page.
-	res, err := http.Get(channelURL) //nolint:gosec
+	res, err := http.Get(channelURL) //nolint:gosec // tolerate security risk
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("status code error: %s", res.Status)
 	}
 
 	// Load the HTML document
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("can't parse HTML: %w", err)
 	}
-
-	return GetPage(doc)
+	return GetPage(doc), nil
 }

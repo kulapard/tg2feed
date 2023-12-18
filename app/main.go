@@ -69,7 +69,10 @@ func main() {
 	for i, tgChannel := range cfg.TelegramChannels {
 		Info("Building RSS feed for Telegram channel: " + tgChannel)
 		// Parse the page
-		page := parser.Parse(tgChannel)
+		page, err := parser.Parse(tgChannel)
+		if err != nil {
+			log.Fatal(err)
+		}
 		tgFeeds[i] = feed.GetFeed(page)
 	}
 

@@ -14,6 +14,7 @@ func TestGetChannelWebURL(t *testing.T) {
 		{`@telegram`, `https://t.me/s/telegram`},
 		{`https://t.me/telegram`, `https://t.me/s/telegram`},
 		{`https://t.me/s/telegram`, `https://t.me/s/telegram`},
+		{`https://t.me/s/telegram?foo=bar#extra`, `https://t.me/s/telegram`},
 	}
 	for _, tt := range tbl {
 		url := GetChannelWebURL(tt.chName)

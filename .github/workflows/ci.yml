@@ -24,8 +24,7 @@ jobs:
         run: go version
 
       - name: Build and test
-        run: |
-          go test -race -v -timeout=100s -covermode=atomic -coverprofile=$GITHUB_WORKSPACE/coverage.out ./...
+        run: go test -race -v -timeout=100s -covermode=atomic -coverprofile=coverage.txt ./...
         working-directory: app
         env:
           GO111MODULE: on
@@ -39,7 +38,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4-beta
         env:
-          files: $GITHUB_WORKSPACE/coverage.out
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   build-image:

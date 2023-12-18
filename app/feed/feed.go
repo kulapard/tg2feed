@@ -2,11 +2,12 @@
 package feed
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"github.com/gorilla/feeds"
 	"github.com/kulapard/tg2feed/app/parser"
 	"log"
 	"os"
-	"sort"
 	"strings"
 	"time"
 )
@@ -30,7 +31,7 @@ func Merge(fs []*feeds.Feed) *feeds.Feed {
 		mergedFeed.Items = append(mergedFeed.Items, feed.Items...)
 	}
 
-	// Sort items by date
+	// Sort items by created date
 	sorFunc := func(a, b *feeds.Item) bool {
 		return a.Created.After(b.Created)
 	}
@@ -47,6 +48,7 @@ func GetFeed(page *parser.Page) *feeds.Feed {
 		Link:        &feeds.Link{Href: page.Link},
 		Description: page.Description,
 		Created:     now,
+		Updated:     now,
 		Author:      &feeds.Author{Name: page.Title},
 	}
 
@@ -57,11 +59,6 @@ func GetFeed(page *parser.Page) *feeds.Feed {
 	}
 
 	feed.Items = make([]*feeds.Item, len(page.Posts))
-
-	// Sort posts by date
-	sort.Slice(page.Posts, func(i, j int) bool {
-		return page.Posts[i].Created.After(page.Posts[j].Created)
-	})
 
 	for i, post := range page.Posts {
 		var enclosure *feeds.Enclosure
@@ -79,7 +76,7 @@ func GetFeed(page *parser.Page) *feeds.Feed {
 			}
 		}
 		feed.Items[i] = &feeds.Item{
-			Id:          post.ID,
+			Id:          GetGUID(post.Link),
 			Title:       post.Title,
 			Link:        &feeds.Link{Href: post.Link},
 			Description: post.Text,
@@ -90,7 +87,21 @@ func GetFeed(page *parser.Page) *feeds.Feed {
 			feed.Items[i].Enclosure = enclosure
 		}
 	}
+
+	// Sort items by created date
+	sorFunc := func(a, b *feeds.Item) bool {
+		return a.Created.After(b.Created)
+	}
+	feed.Sort(sorFunc)
+
 	return feed
+}
+
+// GetGUID returns the GUID for the specified string
+func GetGUID(str string) string {
+	hash := sha256.Sum256([]byte(str))
+	hashStr := hex.EncodeToString(hash[:])
+	return hashStr
 }
 
 func save(fname, content string) error {

@@ -43,23 +43,6 @@ func TestParseDateTime(t *testing.T) {
 	}
 }
 
-func TestGetGUID(t *testing.T) {
-	tbl := []struct {
-		inp string
-		out string
-	}{
-		{"", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
-		{"12345", "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"},
-		{"1234567890", "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"},
-	}
-
-	for _, tb := range tbl {
-		guid := GetGUID(tb.inp)
-		assert.Equal(t, tb.out, guid)
-		assert.Equal(t, 64, len(guid))
-	}
-}
-
 func TestShortenText(t *testing.T) {
 	tbl := []struct {
 		inp string

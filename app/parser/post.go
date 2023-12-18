@@ -12,21 +12,13 @@ import (
 
 // Post represents a post from the telegram channel
 type Post struct {
-	Title    string
-	Text     string
-	Link     string
-	ID       string
-	Created  time.Time
-	Videos   []string
-	Images   []string
-	Previews []struct {
-		Link        string
-		ImageURL    string
-		VideoURL    string
-		SiteName    string
-		Title       string
-		Description string
-	}
+	Title   string
+	Text    string
+	Link    string
+	ID      string
+	Created time.Time
+	Videos  []string
+	Images  []string
 }
 
 // GetPosts returns all posts from the page
@@ -40,7 +32,6 @@ func GetPosts(doc *goquery.Document) []*Post {
 			Title:   GetPostTitle(text),
 			Text:    text,
 			Link:    postLink,
-			ID:      GetGUID(postLink),
 			Created: GetPostCreated(s),
 			Videos:  GetVideos(s),
 			Images:  GetImages(s),

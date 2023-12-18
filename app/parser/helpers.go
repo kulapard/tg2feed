@@ -1,8 +1,6 @@
 package parser
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"strings"
@@ -40,13 +38,6 @@ func ParseDateTime(dt string) (time.Time, error) {
 		return ts, nil
 	}
 	return time.Now(), fmt.Errorf("can't parse datetime %s", dt)
-}
-
-// GetGUID returns the GUID for the specified string
-func GetGUID(str string) string {
-	hash := sha256.Sum256([]byte(str))
-	hashStr := hex.EncodeToString(hash[:])
-	return hashStr
 }
 
 // ShortenText shortens the text to the specified length.

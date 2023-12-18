@@ -32,6 +32,7 @@ func FixLinks(s *goquery.Selection) *goquery.Selection {
 	return s
 }
 
+// RemoveUnsafeTags removes all tags except <a>, <i>, <b>, <br>
 func RemoveUnsafeTags(s *goquery.Selection) *goquery.Selection {
 	// Clone the selection to avoid modifying the original
 	s = s.Clone()

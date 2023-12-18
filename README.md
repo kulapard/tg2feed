@@ -1,6 +1,7 @@
 # Telegram Channel Feed Builder
 
 [![Build Status](https://github.com/kulapard/tg2feed/actions/workflows/feed.yml/badge.svg)](https://github.com/kulapard/tg2feed/actions/workflows/feed.yml)
+[![codecov](https://codecov.io/gh/kulapard/tg2feed/graph/badge.svg?token=ZSQQFLLT94)](https://codecov.io/gh/kulapard/tg2feed)
 
 Builds feeds from the Telegram channels.
 

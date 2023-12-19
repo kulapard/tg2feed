@@ -168,3 +168,18 @@ func TestGetPostTitle(t *testing.T) {
 		assert.Equal(t, tb.out, title)
 	}
 }
+
+func TestGetPosts(t *testing.T) {
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(testPostHTML))
+	if err != nil {
+		panic(err)
+	}
+	posts := GetPosts(doc)
+	assert.Equal(t, 1, len(posts))
+	assert.Equal(t, "<p>Test text</p>", posts[0].Text)
+	assert.Equal(t, "https://t.me/s/telegram/1", posts[0].Link)
+	assert.Equal(t, "15 Dec 23 16:29 +0000", posts[0].Created.Format(time.RFC822Z))
+	assert.Equal(t, "Test text", posts[0].Title)
+	assert.Equal(t, 3, len(posts[0].Images))
+	assert.Equal(t, 1, len(posts[0].Videos))
+}

@@ -38,7 +38,7 @@ func RemoveUnsafeTags(s *goquery.Selection) *goquery.Selection {
 	s = s.Clone()
 
 	// Remove all tags except <a>, <i>, <b>, <br>
-	s.Find("*").Each(func(i int, s *goquery.Selection) {
+	s.Find("*").Each(func(_ int, s *goquery.Selection) {
 		if !s.Is("a, i, b, br") {
 			s.ReplaceWithHtml(s.Text())
 		}

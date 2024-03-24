@@ -25,7 +25,7 @@ type Post struct {
 func GetPosts(doc *goquery.Document) []*Post {
 	var posts []*Post
 
-	doc.Find(".tgme_widget_message_wrap").Each(func(i int, s *goquery.Selection) {
+	doc.Find(".tgme_widget_message_wrap").Each(func(_ int, s *goquery.Selection) {
 		postLink := GetPostLink(s)
 		text := GetPostTextHTML(s)
 		posts = append(posts, &Post{
@@ -70,7 +70,7 @@ func GetPostTextHTML(s *goquery.Selection) string {
 	}
 	for _, part := range parts {
 		// ignore empty paragraphs
-		if len(part) > 0 {
+		if part != "" {
 			paragraphs = append(paragraphs, fmt.Sprintf("<p>%s</p>", strings.TrimSpace(part)))
 		}
 	}
@@ -118,7 +118,7 @@ func GetPostCreated(s *goquery.Selection) time.Time {
 // GetVideos returns all videos from the post
 func GetVideos(s *goquery.Selection) []string {
 	var videos []string
-	s.Find("video").Each(func(i int, s *goquery.Selection) {
+	s.Find("video").Each(func(_ int, s *goquery.Selection) {
 		videoURL, exists := s.Attr("src")
 		if exists {
 			videos = append(videos, videoURL)
@@ -151,12 +151,12 @@ func extractImageURLFromStyle(s *goquery.Selection) string {
 // GetImages returns all images from the post
 func GetImages(s *goquery.Selection) []string {
 	var images []string
-	s.Find(".tgme_widget_message_photo_wrap").Each(func(i int, s *goquery.Selection) {
+	s.Find(".tgme_widget_message_photo_wrap").Each(func(_ int, s *goquery.Selection) {
 		if imageURL := extractImageURLFromStyle(s); imageURL != "" {
 			images = append(images, imageURL)
 		}
 	})
-	s.Find("img").Each(func(i int, s *goquery.Selection) {
+	s.Find("img").Each(func(_ int, s *goquery.Selection) {
 		if imageURL, exists := s.Attr("src"); exists {
 			images = append(images, imageURL)
 		}

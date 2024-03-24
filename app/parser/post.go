@@ -25,7 +25,7 @@ type Post struct {
 func GetPosts(doc *goquery.Document) []*Post {
 	var posts []*Post
 
-	doc.Find(".tgme_widget_message_wrap").Each(func(i int, s *goquery.Selection) {
+	doc.Find(".tgme_widget_message_wrap").Each(func(_ int, s *goquery.Selection) {
 		postLink := GetPostLink(s)
 		text := GetPostTextHTML(s)
 		posts = append(posts, &Post{

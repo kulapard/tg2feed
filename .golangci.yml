@@ -1,12 +1,11 @@
 run:
   modules-download-mode: vendor
-  skip-dirs:
-    - vendor
   concurrency: 4
 
 linters-settings:
   govet:
-    check-shadowing: true
+    enable:
+      - shadow
   golint:
     min-confidence: 0.8
   gocyclo:
@@ -55,6 +54,8 @@ linters:
 
 
 issues:
+  exclude-dirs:
+    - vendor
   exclude-rules:
     - text: "package-comments: should have a package comment"
       linters:

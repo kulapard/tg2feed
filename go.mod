@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.1
-	github.com/gorilla/feeds v1.1.2
+	github.com/gorilla/feeds v1.2.0
 	github.com/stretchr/testify v1.9.0
 )
 

@@ -11,7 +11,7 @@ inputs:
     default: "./"
   formats:
     description: "Output formats separated by comma. 
-                  Accepted formats: `rss`, `atom`, `json`"
+                  Accepted values: `rss`, `atom`, `json`"
     default: "rss"
   telegram-channels:
     description: "Telegram channels separated by comma. 

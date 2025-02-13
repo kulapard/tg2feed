@@ -10,7 +10,6 @@ Telegram channels:
 - [@Alexey_Pivo_varov](https://t.me/Alexey_Pivo_varov)
 - [@addmeto](https://t.me/addmeto)
 - [@kyrillic](https://t.me/kyrillic)
-- [@dukaliti](https://t.me/dukaliti)
 - [@pmdaily](https://t.me/pmdaily)
 
 Output formats:

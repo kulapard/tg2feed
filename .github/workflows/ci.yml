@@ -15,7 +15,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -47,7 +47,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -95,7 +95,7 @@ jobs:
     env:
       OUTPUT_DIR: ${{ github.workspace }}/output
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Create feed
         uses: ./
         with:

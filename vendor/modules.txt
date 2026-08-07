@@ -15,9 +15,10 @@ github.com/gorilla/feeds
 github.com/pmezard/go-difflib/difflib
 # github.com/rogpeppe/go-internal v1.11.0
 ## explicit; go 1.19
-# github.com/stretchr/testify v1.9.0
+# github.com/stretchr/testify v1.11.1
 ## explicit; go 1.17
 github.com/stretchr/testify/assert
+github.com/stretchr/testify/assert/yaml
 # golang.org/x/net v0.21.0
 ## explicit; go 1.18
 golang.org/x/net/html
